@@ -56,7 +56,7 @@
         
         .layer-group-title {
             font-weight: 600;
-            color: #1e40af;
+            color: #dc2626; /* Changed from blue-900 to red-800 */
             margin-bottom: 8px;
             display: flex;
             align-items: center;
@@ -76,7 +76,7 @@
         }
         
         .mapboxgl-popup-content h3 {
-            color: #1e40af;
+            color: #dc2626; /* Changed from blue-900 to red-800 */
             font-weight: 600;
             margin-bottom: 5px;
         }
@@ -177,22 +177,22 @@
 </head>
 <body class="bg-gray-50 font-sans">
     <!-- Navigation -->
-    <nav class="bg-blue-900 text-white shadow-lg">
+    <nav class="bg-red-900 text-white shadow-lg"> <!-- Changed from blue-900 to red-900 -->
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-2">
                 <i class="fas fa-plane-departure text-2xl"></i>
                 <span class="text-xl font-bold">Gateway-A</span>
             </div>
             <div class="hidden md:flex space-x-6">
-                <a href="#" class="hover:text-blue-200">Home</a>
-                <a href="#features" class="hover:text-blue-200">Features</a>
-                <a href="#coverage" class="hover:text-blue-200">Coverage</a>
-                <a href="#pricing" class="hover:text-blue-200">Pricing</a>
-                <a href="#about" class="hover:text-blue-200">About</a>
+                <a href="#" class="hover:text-red-200">Home</a> <!-- Changed from blue-200 to red-200 -->
+                <a href="#features" class="hover:text-red-200">Features</a>
+                <a href="#coverage" class="hover:text-red-200">Coverage</a>
+                <a href="#pricing" class="hover:text-red-200">Pricing</a>
+                <a href="#about" class="hover:text-red-200">About</a>
             </div>
             <div class="flex items-center space-x-4">
-                <button class="bg-blue-700 hover:bg-blue-600 px-4 py-2 rounded-md">Login</button>
-                <button class="bg-white text-blue-900 hover:bg-gray-100 px-4 py-2 rounded-md font-medium">Sign Up</button>
+                <button class="bg-red-700 hover:bg-red-600 px-4 py-2 rounded-md">Login</button> <!-- Changed from blue-700 to red-700 -->
+                <button class="bg-white text-red-900 hover:bg-gray-100 px-4 py-2 rounded-md font-medium">Sign Up</button> <!-- Changed from blue-900 to red-900 -->
                 <button class="md:hidden">
                     <i class="fas fa-bars text-xl"></i>
                     </button>
@@ -201,30 +201,30 @@
     </nav>
 
     <!-- Hero Section -->
-    <div class="bg-gradient-to-r from-blue-900 to-blue-700 text-white py-16">
+    <div class="bg-gradient-to-r from-red-900 to-red-700 text-white py-16"> <!-- Changed from blue to red -->
         <div class="container mx-auto px-4 text-center">
             <h1 class="text-4xl md:text-5xl font-bold mb-6">African Aeronautical Data Platform</h1>
             <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">Enhancing aviation safety and operational efficiency across Africa with comprehensive aeronautical information</p>
             <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <a href="#features" class="bg-white text-blue-900 hover:bg-gray-100 px-6 py-3 rounded-md font-bold text-lg">Explore Features</a>
-                <a href="#pricing" class="bg-transparent border-2 border-white hover:bg-blue-800 px-6 py-3 rounded-md font-bold text-lg">View Pricing</a>
+                <a href="#features" class="bg-white text-red-900 hover:bg-gray-100 px-6 py-3 rounded-md font-bold text-lg">Explore Features</a> <!-- Changed from blue-900 to red-900 -->
+                <a href="#pricing" class="bg-transparent border-2 border-white hover:bg-red-800 px-6 py-3 rounded-md font-bold text-lg">View Pricing</a> <!-- Changed from blue-800 to red-800 -->
             </div>
         </div>
     </div>
 
     <!-- Main Content -->
     <div class="container mx-auto px-4 py-12">
-        <h2 class="text-3xl font-bold text-center mb-12 text-blue-900">Comprehensive Aeronautical Data Services</h2>
+        <h2 class="text-3xl font-bold text-center mb-12 text-red-900">Comprehensive Aeronautical Data Services</h2> <!-- Changed from blue-900 to red-900 -->
         
         <!-- Content explaining the platform -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
             <div class="bg-white p-6 rounded-xl shadow-md">
-                <h3 class="text-xl font-bold mb-4 text-blue-900">Real-time Aeronautical Information</h3>
+                <h3 class="text-xl font-bold mb-4 text-red-900">Real-time Aeronautical Information</h3> <!-- Changed from blue-900 to red-900 -->
                 <p class="text-gray-600 mb-4">Gateway-A provides the most comprehensive and up-to-date aeronautical data for Africa, including airport information, NOTAMs, weather data, and airspace details.</p>
                 <p class="text-gray-600">Our interactive map (available in the Features section) allows you to visualize all this data in one intuitive interface.</p>
             </div>
             <div class="bg-white p-6 rounded-xl shadow-md">
-                <h3 class="text-xl font-bold mb-4 text-blue-900">Coverage Across Africa</h3>
+                <h3 class="text-xl font-bold mb-4 text-red-900">Coverage Across Africa</h3> <!-- Changed from blue-900 to red-900 -->
                 <p class="text-gray-600 mb-4">We currently cover major airports and airspaces in multiple African countries, with new locations being added regularly.</p>
                 <p class="text-gray-600">Check our Coverage section for the complete list of supported locations and our expansion roadmap.</p>
             </div>
@@ -232,7 +232,7 @@
         
         <!-- Call to action to view the map -->
         <div class="text-center">
-            <a href="#features" class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md font-bold text-lg">
+            <a href="#features" class="inline-block bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-md font-bold text-lg"> <!-- Changed from blue to red -->
                 View Interactive Map <i class="fas fa-arrow-right ml-2"></i>
             </a>
         </div>
@@ -241,47 +241,47 @@
     <!-- Features Section -->
     <div id="features" class="bg-gray-100 py-16">
         <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-12 text-blue-900">Key Features</h2>
+            <h2 class="text-3xl font-bold text-center mb-12 text-red-900">Key Features</h2> <!-- Changed from blue-900 to red-900 -->
             
             <!-- Feature Cards -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
                 <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
-                    <div class="text-blue-600 mb-4">
+                    <div class="text-red-600 mb-4"> <!-- Changed from blue-600 to red-600 -->
                         <i class="fas fa-map-marked-alt text-4xl"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-3">Interactive Aeronautical Map</h3>
                     <p class="text-gray-600">Visualize all critical aeronautical data on an intuitive map interface with customizable layers for different operational needs.</p>
                 </div>
                 <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
-                    <div class="text-blue-600 mb-4">
+                    <div class="text-red-600 mb-4"> <!-- Changed from blue-600 to red-600 -->
                         <i class="fas fa-cloud-sun-rain text-4xl"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-3">Real-time Weather Data</h3>
                     <p class="text-gray-600">Access METARs, TAFs, and other critical weather information updated in real-time for better flight planning.</p>
                 </div>
                 <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
-                    <div class="text-blue-600 mb-4">
+                    <div class="text-red-600 mb-4"> <!-- Changed from blue-600 to red-600 -->
                         <i class="fas fa-exclamation-triangle text-4xl"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-3">NOTAM Management</h3>
                     <p class="text-gray-600">Comprehensive NOTAM visualization with filtering capabilities to identify critical operational information quickly.</p>
                 </div>
                 <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
-                    <div class="text-blue-600 mb-4">
+                    <div class="text-red-600 mb-4"> <!-- Changed from blue-600 to red-600 -->
                         <i class="fas fa-route text-4xl"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-3">ATS Route Planning</h3>
                     <p class="text-gray-600">View and analyze Air Traffic Service routes with detailed information on navigation aids and restrictions.</p>
                 </div>
                 <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
-                    <div class="text-blue-600 mb-4">
+                    <div class="text-red-600 mb-4"> <!-- Changed from blue-600 to red-600 -->
                         <i class="fas fa-chart-line text-4xl"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-3">Airspace Analytics</h3>
                     <p class="text-gray-600">Advanced tools for analyzing air traffic trends, safety incidents, and operational efficiency metrics.</p>
                 </div>
                 <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
-                    <div class="text-blue-600 mb-4">
+                    <div class="text-red-600 mb-4"> <!-- Changed from blue-600 to red-600 -->
                         <i class="fas fa-satellite-dish text-4xl"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-3">Satellite Analysis</h3>
@@ -290,7 +290,7 @@
             </div>
             
             <!-- Interactive Map Section -->
-            <h3 class="text-2xl font-bold text-center mb-8 text-blue-900">Interactive Aeronautical Data Map</h3>
+            <h3 class="text-2xl font-bold text-center mb-8 text-red-900">Interactive Aeronautical Data Map</h3> <!-- Changed from blue-900 to red-900 -->
             <p class="text-center mb-8 max-w-2xl mx-auto text-gray-600">Explore our comprehensive aeronautical data through the interactive map below. Toggle different layers to view specific information.</p>
             
             <!-- Map Container -->
@@ -304,7 +304,7 @@
                     </button>
                     
                     <div class="p-4">
-                        <h3 class="text-xl font-bold mb-4 text-blue-900">Data Layers</h3>
+                        <h3 class="text-xl font-bold mb-4 text-red-900">Data Layers</h3> <!-- Changed from blue-900 to red-900 -->
                         
                         <!-- Aerodrome Data -->
                         <div class="layer-group">
@@ -474,11 +474,11 @@
                         <div class="legend mt-6">
                             <h4 class="font-bold mb-2">Legend</h4>
                             <div class="legend-item">
-                                <div class="legend-color bg-blue-500"></div>
+                                <div class="legend-color bg-red-500"></div> <!-- Changed from blue-500 to red-500 -->
                                 <span>Airports</span>
                             </div>
                             <div class="legend-item">
-                                <div class="legend-color bg-red-500"></div>
+                                <div class="legend-color bg-red-500"></div> <!-- Changed from red-500 to red-500 (kept same) -->
                                 <span>Runways</span>
                             </div>
                             <div class="legend-item">
@@ -504,7 +504,7 @@
                 <!-- Search Box -->
                 <div class="search-box">
                     <div class="relative">
-                        <input type="text" placeholder="Search airports, waypoints..." class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <input type="text" placeholder="Search airports, waypoints..." class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500"> <!-- Changed from blue-500 to red-500 -->
                         <button class="absolute right-2 top-2 text-gray-500">
                             <i class="fas fa-search"></i>
                         </button>
@@ -535,14 +535,14 @@
     <!-- Pricing Section -->
     <div id="pricing" class="py-16 bg-white">
         <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-4 text-blue-900">Simple, Transparent Pricing</h2>
+            <h2 class="text-3xl font-bold text-center mb-4 text-red-900">Simple, Transparent Pricing</h2> <!-- Changed from blue-900 to red-900 -->
             <p class="text-xl text-center mb-12 text-gray-600 max-w-2xl mx-auto">Choose the plan that fits your operational needs. All plans include our core aeronautical data services.</p>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
                 <!-- Free Tier -->
-                <div class="pricing-card bg-white rounded-lg shadow-md border-blue-500">
+                <div class="pricing-card bg-white rounded-lg shadow-md border-red-500"> <!-- Changed from blue-500 to red-500 -->
                     <div class="p-8">
-                        <h3 class="text-xl font-bold mb-2 text-blue-900">Free Tier</h3>
+                        <h3 class="text-xl font-bold mb-2 text-red-900">Free Tier</h3> <!-- Changed from blue-900 to red-900 -->
                         <p class="text-gray-600 mb-6">For individual pilots and small operators</p>
                         <div class="mb-6">
                             <span class="text-4xl font-bold">$0</span>
@@ -567,7 +567,7 @@
                     <div class="p-8">
                         <div class="flex justify-between items-start">
                             <div>
-                                <h3 class="text-xl font-bold mb-2 text-blue-900">Advanced</h3>
+                                <h3 class="text-xl font-bold mb-2 text-red-900">Advanced</h3> <!-- Changed from blue-900 to red-900 -->
                                 <p class="text-gray-600 mb-6">For commercial operators and flight schools</p>
                             </div>
                             <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">POPULAR</span>
@@ -576,7 +576,7 @@
                             <span class="text-4xl font-bold">$99</span>
                             <span class="text-gray-500">/month</span>
                         </div>
-                        <button class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md font-medium mb-6">Upgrade Now</button>
+                        <button class="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-md font-medium mb-6">Upgrade Now</button> <!-- Changed from blue to red -->
                         <ul class="feature-list">
                             <li>Full aerodrome data</li>
                             <li>Complete NOTAM access (Class A & B)</li>
@@ -593,13 +593,13 @@
                 <!-- Premium Tier -->
                 <div class="pricing-card bg-white rounded-lg shadow-md border-purple-500">
                     <div class="p-8">
-                        <h3 class="text-xl font-bold mb-2 text-blue-900">Premium</h3>
+                        <h3 class="text-xl font-bold mb-2 text-red-900">Premium</h3> <!-- Changed from blue-900 to red-900 -->
                         <p class="text-gray-600 mb-6">For ANSPs, authorities and large operators</p>
                         <div class="mb-6">
                             <span class="text-4xl font-bold">$299</span>
                             <span class="text-gray-500">/month</span>
                         </div>
-                        <button class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md font-medium mb-6">Get Premium</button>
+                        <button class="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-md font-medium mb-6">Get Premium</button> <!-- Changed from blue to red -->
                         <ul class="feature-list">
                             <li>Full aerodrome data with facilities</li>
                             <li>Complete NOTAM access + spatial tags</li>
@@ -618,11 +618,11 @@
             <div class="mt-16 bg-gray-50 rounded-xl p-8 max-w-4xl mx-auto">
                 <div class="flex flex-col md:flex-row items-center">
                     <div class="md:w-2/3 mb-6 md:mb-0">
-                        <h3 class="text-2xl font-bold mb-2 text-blue-900">Enterprise Solutions</h3>
+                        <h3 class="text-2xl font-bold mb-2 text-red-900">Enterprise Solutions</h3> <!-- Changed from blue-900 to red-900 -->
                         <p class="text-gray-600">Need customized solutions for your organization? Our enterprise plans offer API access, dedicated infrastructure, and white-label options.</p>
                     </div>
                     <div class="md:w-1/3 text-center md:text-right">
-                        <button class="bg-white border border-blue-600 text-blue-600 hover:bg-blue-50 px-6 py-3 rounded-md font-medium">Contact Sales</button>
+                        <button class="bg-white border border-red-600 text-red-600 hover:bg-red-50 px-6 py-3 rounded-md font-medium">Contact Sales</button> <!-- Changed from blue to red -->
                     </div>
                 </div>
             </div>
@@ -632,73 +632,73 @@
     <!-- Coverage Section -->
     <div id="coverage" class="bg-gray-100 py-16">
         <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-12 text-blue-900">Current Coverage</h2>
+            <h2 class="text-3xl font-bold text-center mb-12 text-red-900">Current Coverage</h2> <!-- Changed from blue-900 to red-900 -->
             <div class="grid grid-cols-2 md:grid-cols-5 gap-6 max-w-4xl mx-auto">
                 <div class="bg-white p-4 rounded-lg shadow text-center">
-                    <div class="text-blue-600 mb-2">
+                    <div class="text-red-600 mb-2"> <!-- Changed from blue-600 to red-600 -->
                         <i class="fas fa-flag text-2xl"></i>
                     </div>
                     <h3 class="font-bold">Kenya</h3>
                     <p class="text-sm text-gray-600">HKJK, HKMO</p>
                 </div>
                 <div class="bg-white p-4 rounded-lg shadow text-center">
-                    <div class="text-blue-600 mb-2">
+                    <div class="text-red-600 mb-2"> <!-- Changed from blue-600 to red-600 -->
                         <i class="fas fa-flag text-2xl"></i>
                     </div>
                     <h3 class="font-bold">South Africa</h3>
                     <p class="text-sm text-gray-600">FAOR, FACT</p>
                 </div>
                 <div class="bg-white p-4 rounded-lg shadow text-center">
-                    <div class="text-blue-600 mb-2">
+                    <div class="text-red-600 mb-2"> <!-- Changed from blue-600 to red-600 -->
                         <i class="fas fa-flag text-2xl"></i>
                     </div>
                     <h3 class="font-bold">Rwanda</h3>
                     <p class="text-sm text-gray-600">HRYR</p>
                 </div>
                 <div class="bg-white p-4 rounded-lg shadow text-center">
-                    <div class="text-blue-600 mb-2">
+                    <div class="text-red-600 mb-2"> <!-- Changed from blue-600 to red-600 -->
                         <i class="fas fa-flag text-2xl"></i>
                     </div>
                     <h3 class="font-bold">Ethiopia</h3>
                     <p class="text-sm text-gray-600">HAAB</p>
                 </div>
                 <div class="bg-white p-4 rounded-lg shadow text-center">
-                    <div class="text-blue-600 mb-2">
+                    <div class="text-red-600 mb-2"> <!-- Changed from blue-600 to red-600 -->
                         <i class="fas fa-flag text-2xl"></i>
                     </div>
                     <h3 class="font-bold">Madagascar</h3>
                     <p class="text-sm text-gray-600">FMMI</p>
                 </div>
                 <div class="bg-white p-4 rounded-lg shadow text-center">
-                    <div class="text-blue-600 mb-2">
+                    <div class="text-red-600 mb-2"> <!-- Changed from blue-600 to red-600 -->
                         <i class="fas fa-flag text-2xl"></i>
                     </div>
                     <h3 class="font-bold">Mali</h3>
                     <p class="text-sm text-gray-600">GABS</p>
                 </div>
                 <div class="bg-white p-4 rounded-lg shadow text-center">
-                    <div class="text-blue-600 mb-2">
+                    <div class="text-red-600 mb-2"> <!-- Changed from blue-600 to red-600 -->
                         <i class="fas fa-flag text-2xl"></i>
                     </div>
                     <h3 class="font-bold">Senegal</h3>
                     <p class="text-sm text-gray-600">GOBD</p>
                 </div>
                 <div class="bg-white p-4 rounded-lg shadow text-center">
-                    <div class="text-blue-600 mb-2">
+                    <div class="text-red-600 mb-2"> <!-- Changed from blue-600 to red-600 -->
                         <i class="fas fa-flag text-2xl"></i>
                     </div>
                     <h3 class="font-bold">Congo</h3>
                     <p class="text-sm text-gray-600">FCBB</p>
                 </div>
                 <div class="bg-white p-4 rounded-lg shadow text-center">
-                    <div class="text-blue-600 mb-2">
+                    <div class="text-red-600 mb-2"> <!-- Changed from blue-600 to red-600 -->
                         <i class="fas fa-flag text-2xl"></i>
                     </div>
                     <h3 class="font-bold">Seychelles</h3>
                     <p class="text-sm text-gray-600">FSIA</p>
                 </div>
                 <div class="bg-white p-4 rounded-lg shadow text-center">
-                    <div class="text-blue-600 mb-2">
+                    <div class="text-red-600 mb-2"> <!-- Changed from blue-600 to red-600 -->
                         <i class="fas fa-plus text-2xl"></i>
                     </div>
                     <h3 class="font-bold">More Coming</h3>
@@ -709,50 +709,50 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-blue-900 text-white py-12">
+    <footer class="bg-red-900 text-white py-12"> <!-- Changed from blue-900 to red-900 -->
         <div class="container mx-auto px-4">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div>
                     <h3 class="text-xl font-bold mb-4">Gateway-A</h3>
-                    <p class="text-blue-200">The leading platform for aeronautical data in Africa, enhancing aviation safety and operational efficiency.</p>
+                    <p class="text-red-200">The leading platform for aeronautical data in Africa, enhancing aviation safety and operational efficiency.</p> <!-- Changed from blue-200 to red-200 -->
                 </div>
                 <div>
                     <h4 class="font-bold mb-4">Quick Links</h4>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-blue-200 hover:text-white">Home</a></li>
-                        <li><a href="#features" class="text-blue-200 hover:text-white">Features</a></li>
-                        <li><a href="#coverage" class="text-blue-200 hover:text-white">Coverage</a></li>
-                        <li><a href="#pricing" class="text-blue-200 hover:text-white">Pricing</a></li>
+                        <li><a href="#" class="text-red-200 hover:text-white">Home</a></li> <!-- Changed from blue-200 to red-200 -->
+                        <li><a href="#features" class="text-red-200 hover:text-white">Features</a></li>
+                        <li><a href="#coverage" class="text-red-200 hover:text-white">Coverage</a></li>
+                        <li><a href="#pricing" class="text-red-200 hover:text-white">Pricing</a></li>
                     </ul>
                 </div>
                 <div>
                     <h4 class="font-bold mb-4">Resources</h4>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-blue-200 hover:text-white">Documentation</a></li>
-                        <li><a href="#" class="text-blue-200 hover:text-white">API Access</a></li>
-                        <li><a href="#" class="text-blue-200 hover:text-white">Support</a></li>
-                        <li><a href="#" class="text-blue-200 hover:text-white">Blog</a></li>
+                        <li><a href="#" class="text-red-200 hover:text-white">Documentation</a></li> <!-- Changed from blue-200 to red-200 -->
+                        <li><a href="#" class="text-red-200 hover:text-white">API Access</a></li>
+                        <li><a href="#" class="text-red-200 hover:text-white">Support</a></li>
+                        <li><a href="#" class="text-red-200 hover:text-white">Blog</a></li>
                     </ul>
                 </div>
                 <div>
                     <h4 class="font-bold mb-4">Contact Us</h4>
                     <ul class="space-y-2">
                         <li class="flex items-center">
-                            <i class="fas fa-envelope mr-2 text-blue-200"></i>
+                            <i class="fas fa-envelope mr-2 text-red-200"></i> <!-- Changed from blue-200 to red-200 -->
                             <span>info@gateway-a.com</span>
                         </li>
                         <li class="flex items-center">
-                            <i class="fas fa-phone mr-2 text-blue-200"></i>
+                            <i class="fas fa-phone mr-2 text-red-200"></i> <!-- Changed from blue-200 to red-200 -->
                             <span>+254 700 123 456</span>
                         </li>
                         <li class="flex items-center">
-                            <i class="fas fa-map-marker-alt mr-2 text-blue-200"></i>
+                            <i class="fas fa-map-marker-alt mr-2 text-red-200"></i> <!-- Changed from blue-200 to red-200 -->
                             <span>Nairobi, Kenya</span>
                         </li>
                     </ul>
                 </div>
             </div>
-            <div class="border-t border-blue-800 mt-8 pt-8 text-center text-blue-200">
+            <div class="border-t border-red-800 mt-8 pt-8 text-center text-red-200"> <!-- Changed from blue-800 to red-800 -->
                 <p>&copy; 2023 Gateway-A. All rights reserved.</p>
             </div>
         </div>
@@ -1043,7 +1043,7 @@
                 'source': 'aerodromes',
                 'paint': {
                     'circle-radius': 6,
-                    'circle-color': '#3b82f6',
+                    'circle-color': '#dc2626', // Changed from blue to red-800
                     'circle-stroke-width': 1,
                     'circle-stroke-color': '#ffffff'
                 }
