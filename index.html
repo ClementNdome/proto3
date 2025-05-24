@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gateway-A | African Aeronautical Data Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css' rel='stylesheet' />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .map-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+        }
+        
+        .sidebar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 350px;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+            overflow-y: auto;
+            z-index: 1;
+        }
+        
+        .sidebar.collapsed {
+            transform: translateX(-320px);
+        }
+        
+        .toggle-btn {
+            position: absolute;
+            right: -40px;
+            top: 10px;
+            width: 40px;
+            height: 40px;
+            background: white;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .layer-group {
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 10px;
+        }
+        
+        .layer-group-title {
+            font-weight: 600;
+            color: #1e40af;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .layer-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+            padding-left: 20px;
+        }
+        
+        .mapboxgl-popup-content {
+            max-width: 300px;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .mapboxgl-popup-content h3 {
+            color: #1e40af;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .mapboxgl-popup-content p {
+            margin-bottom: 3px;
+            font-size: 14px;
+        }
+        
+        .mapboxgl-popup-content .feature-property {
+            font-weight: 500;
+        }
+        
+        .map-overlay {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+        }
+        
+        .search-box {
+            position: absolute;
+            top: 20px;
+            left: 380px;
+            z-index: 1;
+            width: 300px;
+        }
+        
+        .sidebar.collapsed + .search-box {
+            left: 60px;
+        }
+        
+        .legend {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 10px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+            border-radius: 3px;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        .pricing-card {
+            transition: all 0.3s ease;
+            border-top: 4px solid;
+        }
+        
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .feature-list li {
+            margin-bottom: 8px;
+            position: relative;
+            padding-left: 25px;
+        }
+        
+        .feature-list li:before {
+            content: "\f00c";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            color: #10b981;
+        }
+        
+        .feature-list .disabled:before {
+            content: "\f00d";
+            color: #ef4444;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Navigation -->
+    <nav class="bg-blue-900 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-plane-departure text-2xl"></i>
+                <span class="text-xl font-bold">Gateway-A</span>
+            </div>
+            <div class="hidden md:flex space-x-6">
+                <a href="#" class="hover:text-blue-200">Home</a>
+                <a href="#features" class="hover:text-blue-200">Features</a>
+                <a href="#coverage" class="hover:text-blue-200">Coverage</a>
+                <a href="#pricing" class="hover:text-blue-200">Pricing</a>
+                <a href="#about" class="hover:text-blue-200">About</a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="bg-blue-700 hover:bg-blue-600 px-4 py-2 rounded-md">Login</button>
+                <button class="bg-white text-blue-900 hover:bg-gray-100 px-4 py-2 rounded-md font-medium">Sign Up</button>
+                <button class="md:hidden">
+                    <i class="fas fa-bars text-xl"></i>
+                    </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="bg-gradient-to-r from-blue-900 to-blue-700 text-white py-16">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-6">African Aeronautical Data Platform</h1>
+            <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">Enhancing aviation safety and operational efficiency across Africa with comprehensive aeronautical information</p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#features" class="bg-white text-blue-900 hover:bg-gray-100 px-6 py-3 rounded-md font-bold text-lg">Explore Features</a>
+                <a href="#pricing" class="bg-transparent border-2 border-white hover:bg-blue-800 px-6 py-3 rounded-md font-bold text-lg">View Pricing</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-12">
+        <h2 class="text-3xl font-bold text-center mb-12 text-blue-900">Comprehensive Aeronautical Data Services</h2>
+        
+        <!-- Content explaining the platform -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <h3 class="text-xl font-bold mb-4 text-blue-900">Real-time Aeronautical Information</h3>
+                <p class="text-gray-600 mb-4">Gateway-A provides the most comprehensive and up-to-date aeronautical data for Africa, including airport information, NOTAMs, weather data, and airspace details.</p>
+                <p class="text-gray-600">Our interactive map (available in the Features section) allows you to visualize all this data in one intuitive interface.</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <h3 class="text-xl font-bold mb-4 text-blue-900">Coverage Across Africa</h3>
+                <p class="text-gray-600 mb-4">We currently cover major airports and airspaces in multiple African countries, with new locations being added regularly.</p>
+                <p class="text-gray-600">Check our Coverage section for the complete list of supported locations and our expansion roadmap.</p>
+            </div>
+        </div>
+        
+        <!-- Call to action to view the map -->
+        <div class="text-center">
+            <a href="#features" class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md font-bold text-lg">
+                View Interactive Map <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div id="features" class="bg-gray-100 py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12 text-blue-900">Key Features</h2>
+            
+            <!-- Feature Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
+                    <div class="text-blue-600 mb-4">
+                        <i class="fas fa-map-marked-alt text-4xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Interactive Aeronautical Map</h3>
+                    <p class="text-gray-600">Visualize all critical aeronautical data on an intuitive map interface with customizable layers for different operational needs.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
+                    <div class="text-blue-600 mb-4">
+                        <i class="fas fa-cloud-sun-rain text-4xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Real-time Weather Data</h3>
+                    <p class="text-gray-600">Access METARs, TAFs, and other critical weather information updated in real-time for better flight planning.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
+                    <div class="text-blue-600 mb-4">
+                        <i class="fas fa-exclamation-triangle text-4xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">NOTAM Management</h3>
+                    <p class="text-gray-600">Comprehensive NOTAM visualization with filtering capabilities to identify critical operational information quickly.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
+                    <div class="text-blue-600 mb-4">
+                        <i class="fas fa-route text-4xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">ATS Route Planning</h3>
+                    <p class="text-gray-600">View and analyze Air Traffic Service routes with detailed information on navigation aids and restrictions.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
+                    <div class="text-blue-600 mb-4">
+                        <i class="fas fa-chart-line text-4xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Airspace Analytics</h3>
+                    <p class="text-gray-600">Advanced tools for analyzing air traffic trends, safety incidents, and operational efficiency metrics.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
+                    <div class="text-blue-600 mb-4">
+                        <i class="fas fa-satellite-dish text-4xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Satellite Analysis</h3>
+                    <p class="text-gray-600">Satellite-based pavement analysis for runways and taxiways to support maintenance planning.</p>
+                </div>
+            </div>
+            
+            <!-- Interactive Map Section -->
+            <h3 class="text-2xl font-bold text-center mb-8 text-blue-900">Interactive Aeronautical Data Map</h3>
+            <p class="text-center mb-8 max-w-2xl mx-auto text-gray-600">Explore our comprehensive aeronautical data through the interactive map below. Toggle different layers to view specific information.</p>
+            
+            <!-- Map Container -->
+            <div class="map-container rounded-xl overflow-hidden shadow-xl">
+                <div id="map" class="w-full h-full"></div>
+                
+                <!-- Sidebar -->
+                <div class="sidebar">
+                    <button class="toggle-btn" id="sidebar-toggle">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    
+                    <div class="p-4">
+                        <h3 class="text-xl font-bold mb-4 text-blue-900">Data Layers</h3>
+                        
+                        <!-- Aerodrome Data -->
+                        <div class="layer-group">
+                            <div class="layer-group-title" onclick="toggleGroup(this)">
+                                <i class="fas fa-chevron-down mr-2 text-sm"></i>
+                                <span>Aerodrome Data</span>
+                            </div>
+                            <div class="layer-group-content">
+                                <div class="layer-item">
+                                    <input type="checkbox" id="runway-physical" class="mr-2" checked>
+                                    <label for="runway-physical">Runway Physical Characteristics</label>
+                                </div>
+                                <div class="layer-item">
+                                    <input type="checkbox" id="runway-distances" class="mr-2" checked>
+                                    <label for="runway-distances">Runway Declared Distances</label>
+                                </div>
+                                <div class="layer-item">
+                                    <input type="checkbox" id="aerodrome-obstacles" class="mr-2" checked>
+                                    <label for="aerodrome-obstacles">Aerodrome Obstacles</label>
+                                </div>
+                                <div class="layer-item">
+                                    <input type="checkbox" id="flight-procedures" class="mr-2">
+                                    <label for="flight-procedures">Flight Procedures</label>
+                                </div>
+                                <div class="layer-item">
+                                    <input type="checkbox" id="taxiways-apron" class="mr-2">
+                                    <label for="taxiways-apron">Taxiways & Apron Data</label>
+                                </div>
+                                <div class="layer-item">
+                                    <input type="checkbox" id="aerodrome-facilities" class="mr-2">
+                                    <label for="aerodrome-facilities">Aerodrome Facilities</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Airspace Data -->
+                        <div class="layer-group">
+                            <div class="layer-group-title" onclick="toggleGroup(this)">
+                                <i class="fas fa-chevron-down mr-2 text-sm"></i>
+                                <span>Airspace Data</span>
+                            </div>
+                            <div class="layer-group-content">
+                                <div class="layer-item">
+                                    <input type="checkbox" id="airspace-dimensions" class="mr-2">
+                                    <label for="airspace-dimensions">Airspace Dimensions (FIR/UIR, TMA & CTA)</label>
+                                </div>
+                                <div class="layer-item">
+                                    <input type="checkbox" id="ats-routes" class="mr-2" checked>
+                                    <label for="ats-routes">ATS Routes</label>
+                                </div>
+                                <div class="layer-item">
+                                    <input type="checkbox" id="nav-aids" class="mr-2">
+                                    <label for="nav-aids">Radio Navigation AIDs</label>
+                                </div>
+                                <div class="layer-item">
+                                    <input type="checkbox" id="nav-warnings" class="mr-2">
+                                    <label for="nav-warnings">Navigation Warnings</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Geographical & Admin Data -->
+                        <div class="layer-group">
+                            <div class="layer-group-title" onclick="toggleGroup(this)">
+                                <i class="fas fa-chevron-down mr-2 text-sm"></i>
+                                <span>Geographical & Administrative</span>
+                            </div>
+                            <div class="layer-group-content">
+                                <div class="layer-item">
+                                    <input type="checkbox" id="arp-coordinates" class="mr-2">
+                                    <label for="arp-coordinates">Airport Reference Points</label>
+                                </div>
+                                <div class="layer-item">
+                                    <input type="checkbox" id="elevation-temp" class="mr-2">
+                                    <label for="elevation-temp">Elevation & Reference Temp</label>
+                                </div>
+                                <div class="layer-item">
+                                    <input type="checkbox" id="magnetic-var" class="mr-2">
+                                    <label for="magnetic-var">Magnetic Variation</label>
+                                </div>
+                                <div class="layer-item">
+                                    <input type="checkbox" id="hours-operation" class="mr-2">
+                                    <label for="hours-operation">Hours of Operation</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- NOTAMs -->
+                        <div class="layer-group">
+                            <div class="layer-group-title" onclick="toggleGroup(this)">
+                                <i class="fas fa-chevron-down mr-2 text-sm"></i>
+                                <span>NOTAMs</span>
+                            </div>
+                            <div class="layer-group-content">
+                                <div class="layer-item">
+                                    <input type="checkbox" id="class-a-notam" class="mr-2" checked>
+                                    <label for="class-a-notam">Class A NOTAMs</label>
+                                </div>
+                                <div class="layer-item">
+                                    <input type="checkbox" id="class-b-notam" class="mr-2">
+                                    <label for="class-b-notam">Class B NOTAMs</label>
+                                </div>
+                                <div class="layer-item">
+                                    <input type="checkbox" id="spatial-notam" class="mr-2">
+                                    <label for="spatial-notam">Spatially-tagged NOTAMs</label>
+                                </div>
+                                <div class="layer-item">
+                                    <input type="checkbox" id="service-bulletins" class="mr-2">
+                                    <label for="service-bulletins">Service Information Bulletins</label>
+                                </div>
+                                <div class="layer-item">
+                                    <input type="checkbox" id="drotam" class="mr-2">
+                                    <label for="drotam">DROTAMs</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Weather Information -->
+                        <div class="layer-group">
+                            <div class="layer-group-title" onclick="toggleGroup(this)">
+                                <i class="fas fa-chevron-down mr-2 text-sm"></i>
+                                <span>Weather Information</span>
+                            </div>
+                            <div class="layer-group-content">
+                                <div class="layer-item">
+                                    <input type="checkbox" id="metar" class="mr-2">
+                                    <label for="metar">METARs/SPECI</label>
+                                </div>
+                                <div class="layer-item">
+                                    <input type="checkbox" id="taf" class="mr-2">
+                                    <label for="taf">TAFs/TRENDs</label>
+                                </div>
+                                <div class="layer-item">
+                                    <input type="checkbox" id="wind-temp" class="mr-2">
+                                    <label for="wind-temp">Wind & Temperature</label>
+                                </div>
+                                <div class="layer-item">
+                                    <input type="checkbox" id="ceiling-vis" class="mr-2">
+                                    <label for="ceiling-vis">Ceiling & Visibility</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- User Defined Data -->
+                        <div class="layer-group">
+                            <div class="layer-group-title" onclick="toggleGroup(this)">
+                                <i class="fas fa-chevron-down mr-2 text-sm"></i>
+                                <span>User Defined Data</span>
+                            </div>
+                            <div class="layer-group-content">
+                                <div class="layer-item">
+                                    <input type="checkbox" id="airport-categories" class="mr-2">
+                                    <label for="airport-categories">Airport Categories</label>
+                                </div>
+                                <div class="layer-item">
+                                    <input type="checkbox" id="airport-restrictions" class="mr-2">
+                                    <label for="airport-restrictions">Restrictions</label>
+                                </div>
+                                <div class="layer-item">
+                                    <input type="checkbox" id="airport-usage" class="mr-2">
+                                    <label for="airport-usage">Usage Types</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Legend -->
+                        <div class="legend mt-6">
+                            <h4 class="font-bold mb-2">Legend</h4>
+                            <div class="legend-item">
+                                <div class="legend-color bg-blue-500"></div>
+                                <span>Airports</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color bg-red-500"></div>
+                                <span>Runways</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color bg-green-500"></div>
+                                <span>ATS Routes</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color bg-yellow-500"></div>
+                                <span>NOTAMs</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color bg-purple-500"></div>
+                                <span>Navigation Aids</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color bg-orange-500 pulse"></div>
+                                <span>Weather Stations</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Search Box -->
+                <div class="search-box">
+                    <div class="relative">
+                        <input type="text" placeholder="Search airports, waypoints..." class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <button class="absolute right-2 top-2 text-gray-500">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Map Controls -->
+                <div class="map-overlay">
+                    <div class="flex space-x-2">
+                        <button class="bg-white hover:bg-gray-100 p-2 rounded-md shadow" title="Zoom In">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                        <button class="bg-white hover:bg-gray-100 p-2 rounded-md shadow" title="Zoom Out">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button class="bg-white hover:bg-gray-100 p-2 rounded-md shadow" title="Current Location">
+                            <i class="fas fa-location-arrow"></i>
+                        </button>
+                        <button class="bg-white hover:bg-gray-100 p-2 rounded-md shadow" title="Full Screen">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pricing Section -->
+    <div id="pricing" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-4 text-blue-900">Simple, Transparent Pricing</h2>
+            <p class="text-xl text-center mb-12 text-gray-600 max-w-2xl mx-auto">Choose the plan that fits your operational needs. All plans include our core aeronautical data services.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                <!-- Free Tier -->
+                <div class="pricing-card bg-white rounded-lg shadow-md border-blue-500">
+                    <div class="p-8">
+                        <h3 class="text-xl font-bold mb-2 text-blue-900">Free Tier</h3>
+                        <p class="text-gray-600 mb-6">For individual pilots and small operators</p>
+                        <div class="mb-6">
+                            <span class="text-4xl font-bold">$0</span>
+                            <span class="text-gray-500">/month</span>
+                        </div>
+                        <button class="w-full bg-gray-200 text-gray-800 hover:bg-gray-300 py-2 rounded-md font-medium mb-6">Current Plan</button>
+                        <ul class="feature-list">
+                            <li>Basic aerodrome data</li>
+                            <li>Limited NOTAM access (Class A only)</li>
+                            <li>Basic weather information (METARs)</li>
+                            <li>Standard ATS routes</li>
+                            <li class="disabled">Live traffic view</li>
+                            <li class="disabled">Advanced analytics</li>
+                            <li class="disabled">Satellite pavement analysis</li>
+                            <li class="disabled">Priority support</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Advanced Tier -->
+                <div class="pricing-card bg-white rounded-lg shadow-lg border-green-500 transform scale-105">
+                    <div class="p-8">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="text-xl font-bold mb-2 text-blue-900">Advanced</h3>
+                                <p class="text-gray-600 mb-6">For commercial operators and flight schools</p>
+                            </div>
+                            <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">POPULAR</span>
+                        </div>
+                        <div class="mb-6">
+                            <span class="text-4xl font-bold">$99</span>
+                            <span class="text-gray-500">/month</span>
+                        </div>
+                        <button class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md font-medium mb-6">Upgrade Now</button>
+                        <ul class="feature-list">
+                            <li>Full aerodrome data</li>
+                            <li>Complete NOTAM access (Class A & B)</li>
+                            <li>Advanced weather (METARs & TAFs)</li>
+                            <li>Detailed ATS routes with nav aids</li>
+                            <li>Delayed traffic view (15 min)</li>
+                            <li>Basic analytics tools</li>
+                            <li class="disabled">Satellite pavement analysis</li>
+                            <li>Email support (24h response)</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Premium Tier -->
+                <div class="pricing-card bg-white rounded-lg shadow-md border-purple-500">
+                    <div class="p-8">
+                        <h3 class="text-xl font-bold mb-2 text-blue-900">Premium</h3>
+                        <p class="text-gray-600 mb-6">For ANSPs, authorities and large operators</p>
+                        <div class="mb-6">
+                            <span class="text-4xl font-bold">$299</span>
+                            <span class="text-gray-500">/month</span>
+                        </div>
+                        <button class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md font-medium mb-6">Get Premium</button>
+                        <ul class="feature-list">
+                            <li>Full aerodrome data with facilities</li>
+                            <li>Complete NOTAM access + spatial tags</li>
+                            <li>Advanced weather with trends</li>
+                            <li>Detailed ATS routes with warnings</li>
+                            <li>Live traffic view (real-time)</li>
+                            <li>Advanced analytics dashboard</li>
+                            <li>Satellite pavement analysis</li>
+                            <li>24/7 priority support</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Enterprise Option -->
+            <div class="mt-16 bg-gray-50 rounded-xl p-8 max-w-4xl mx-auto">
+                <div class="flex flex-col md:flex-row items-center">
+                    <div class="md:w-2/3 mb-6 md:mb-0">
+                        <h3 class="text-2xl font-bold mb-2 text-blue-900">Enterprise Solutions</h3>
+                        <p class="text-gray-600">Need customized solutions for your organization? Our enterprise plans offer API access, dedicated infrastructure, and white-label options.</p>
+                    </div>
+                    <div class="md:w-1/3 text-center md:text-right">
+                        <button class="bg-white border border-blue-600 text-blue-600 hover:bg-blue-50 px-6 py-3 rounded-md font-medium">Contact Sales</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Coverage Section -->
+    <div id="coverage" class="bg-gray-100 py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12 text-blue-900">Current Coverage</h2>
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-6 max-w-4xl mx-auto">
+                <div class="bg-white p-4 rounded-lg shadow text-center">
+                    <div class="text-blue-600 mb-2">
+                        <i class="fas fa-flag text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold">Kenya</h3>
+                    <p class="text-sm text-gray-600">HKJK, HKMO</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow text-center">
+                    <div class="text-blue-600 mb-2">
+                        <i class="fas fa-flag text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold">South Africa</h3>
+                    <p class="text-sm text-gray-600">FAOR, FACT</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow text-center">
+                    <div class="text-blue-600 mb-2">
+                        <i class="fas fa-flag text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold">Rwanda</h3>
+                    <p class="text-sm text-gray-600">HRYR</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow text-center">
+                    <div class="text-blue-600 mb-2">
+                        <i class="fas fa-flag text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold">Ethiopia</h3>
+                    <p class="text-sm text-gray-600">HAAB</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow text-center">
+                    <div class="text-blue-600 mb-2">
+                        <i class="fas fa-flag text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold">Madagascar</h3>
+                    <p class="text-sm text-gray-600">FMMI</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow text-center">
+                    <div class="text-blue-600 mb-2">
+                        <i class="fas fa-flag text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold">Mali</h3>
+                    <p class="text-sm text-gray-600">GABS</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow text-center">
+                    <div class="text-blue-600 mb-2">
+                        <i class="fas fa-flag text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold">Senegal</h3>
+                    <p class="text-sm text-gray-600">GOBD</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow text-center">
+                    <div class="text-blue-600 mb-2">
+                        <i class="fas fa-flag text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold">Congo</h3>
+                    <p class="text-sm text-gray-600">FCBB</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow text-center">
+                    <div class="text-blue-600 mb-2">
+                        <i class="fas fa-flag text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold">Seychelles</h3>
+                    <p class="text-sm text-gray-600">FSIA</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow text-center">
+                    <div class="text-blue-600 mb-2">
+                        <i class="fas fa-plus text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold">More Coming</h3>
+                    <p class="text-sm text-gray-600">Expanding monthly</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-blue-900 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Gateway-A</h3>
+                    <p class="text-blue-200">The leading platform for aeronautical data in Africa, enhancing aviation safety and operational efficiency.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-blue-200 hover:text-white">Home</a></li>
+                        <li><a href="#features" class="text-blue-200 hover:text-white">Features</a></li>
+                        <li><a href="#coverage" class="text-blue-200 hover:text-white">Coverage</a></li>
+                        <li><a href="#pricing" class="text-blue-200 hover:text-white">Pricing</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Resources</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-blue-200 hover:text-white">Documentation</a></li>
+                        <li><a href="#" class="text-blue-200 hover:text-white">API Access</a></li>
+                        <li><a href="#" class="text-blue-200 hover:text-white">Support</a></li>
+                        <li><a href="#" class="text-blue-200 hover:text-white">Blog</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Contact Us</h4>
+                    <ul class="space-y-2">
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope mr-2 text-blue-200"></i>
+                            <span>info@gateway-a.com</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-phone mr-2 text-blue-200"></i>
+                            <span>+254 700 123 456</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-map-marker-alt mr-2 text-blue-200"></i>
+                            <span>Nairobi, Kenya</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-blue-800 mt-8 pt-8 text-center text-blue-200">
+                <p>&copy; 2023 Gateway-A. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Mapbox with the new access token
+        mapboxgl.accessToken = 'pk.eyJ1IjoibmRvbWUyMiIsImEiOiJjbWE4MHpzcW8waHQ3MnFzZ2locGhvNzVyIn0.G0XRxSa4D0qiVIEFoMW-qw';
+        
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/light-v10',
+            center: [20, 0], // Center on Africa
+            zoom: 3,
+            maxBounds: [[-20, -40], [60, 40]] // Constrain view to Africa
+        });
+        
+        // Add navigation controls
+        map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
+        
+        // Sample aerodrome data (in a real app, this would come from your API)
+        const aerodromes = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "name": "Jomo Kenyatta International Airport",
+                        "icao": "HKJK",
+                        "city": "Nairobi",
+                        "country": "Kenya",
+                        "elevation": "5330 ft",
+                        "runways": 2,
+                        "longestRunway": "13450 ft",
+                        "category": "International"
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [36.9278, -1.3192]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "name": "OR Tambo International Airport",
+                        "icao": "FAOR",
+                        "city": "Johannesburg",
+                        "country": "South Africa",
+                        "elevation": "5558 ft",
+                        "runways": 2,
+                        "longestRunway": "14436 ft",
+                        "category": "International"
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [28.2460, -26.1392]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "name": "Kigali International Airport",
+                        "icao": "HRYR",
+                        "city": "Kigali",
+                        "country": "Rwanda",
+                        "elevation": "4859 ft",
+                        "runways": 1,
+                        "longestRunway": "11200 ft",
+                        "category": "International"
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [30.1395, -1.9686]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "name": "Bole International Airport",
+                        "icao": "HAAB",
+                        "city": "Addis Ababa",
+                        "country": "Ethiopia",
+                        "elevation": "7657 ft",
+                        "runways": 2,
+                        "longestRunway": "12467 ft",
+                        "category": "International"
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [38.7990, 8.9779]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "name": "Ivato International Airport",
+                        "icao": "FMMI",
+                        "city": "Antananarivo",
+                        "country": "Madagascar",
+                        "elevation": "4196 ft",
+                        "runways": 1,
+                        "longestRunway": "10107 ft",
+                        "category": "International"
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [47.4788, -18.7969]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "name": "Bamako-Sénou International Airport",
+                        "icao": "GABS",
+                        "city": "Bamako",
+                        "country": "Mali",
+                        "elevation": "1247 ft",
+                        "runways": 1,
+                        "longestRunway": "9186 ft",
+                        "category": "International"
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [-7.9499, 12.5335]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "name": "Blaise Diagne International Airport",
+                        "icao": "GOBD",
+                        "city": "Dakar",
+                        "country": "Senegal",
+                        "elevation": "289 ft",
+                        "runways": 1,
+                        "longestRunway": "10899 ft",
+                        "category": "International"
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [-17.0733, 14.7397]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "name": "Maya-Maya Airport",
+                        "icao": "FCBB",
+                        "city": "Brazzaville",
+                        "country": "Congo",
+                        "elevation": "1048 ft",
+                        "runways": 1,
+                        "longestRunway": "10827 ft",
+                        "category": "International"
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [15.2530, -4.2518]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "name": "Seychelles International Airport",
+                        "icao": "FSIA",
+                        "city": "Victoria",
+                        "country": "Seychelles",
+                        "elevation": "10 ft",
+                        "runways": 1,
+                        "longestRunway": "9843 ft",
+                        "category": "International"
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [55.5218, -4.6743]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "name": "Julius Nyerere International Airport",
+                        "icao": "HTDA",
+                        "city": "Dar es Salaam",
+                        "country": "Tanzania",
+                        "elevation": "182 ft",
+                        "runways": 2,
+                        "longestRunway": "9843 ft",
+                        "category": "International"
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [39.2026, -6.8781]
+                    }
+                }
+            ]
+        };
+        
+        // Sample ATS routes (simplified)
+        const atsRoutes = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "name": "A1",
+                        "type": "Airway",
+                        "minAltitude": "FL195",
+                        "maxAltitude": "FL460"
+                    },
+                    "geometry": {
+                        "type": "LineString",
+                        "coordinates": [
+                            [36.9278, -1.3192], // HKJK
+                            [38.7990, 8.9779],  // HAAB
+                            [39.2026, -6.8781]  // HTDA
+                        ]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "name": "B1",
+                        "type": "Airway",
+                        "minAltitude": "FL195",
+                        "maxAltitude": "FL460"
+                    },
+                    "geometry": {
+                        "type": "LineString",
+                        "coordinates": [
+                            [28.2460, -26.1392], // FAOR
+                            [30.1395, -1.9686],  // HRYR
+                            [36.9278, -1.3192]   // HKJK
+                        ]
+                    }
+                }
+            ]
+        };
+        
+        // Sample NOTAMs
+        const notams = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "A1234/23",
+                        "type": "Runway Closure",
+                        "location": "HKJK RWY 06/24",
+                        "validFrom": "2023-06-15T00:00Z",
+                        "validTo": "2023-06-20T23:59Z",
+                        "message": "RWY 06/24 CLOSED FOR MAINTENANCE. USE RWY 07/25."
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [36.9278, -1.3192]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "B5678/23",
+                        "type": "Navigation Aid",
+                        "location": "FAOR VOR",
+                        "validFrom": "2023-06-10T00:00Z",
+                        "validTo": "2023-06-25T23:59Z",
+                        "message": "VOR UNRELIABLE. USE GPS OR ALTERNATE NAVIGATION."
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [28.2460, -26.1392]
+                    }
+                }
+            ]
+        };
+
+        // When the map loads, add our data sources and layers
+        map.on('load', () => {
+            // Add aerodrome data source
+            map.addSource('aerodromes', {
+                'type': 'geojson',
+                'data': aerodromes
+            });
+            
+            // Add aerodrome layer
+            map.addLayer({
+                'id': 'aerodromes',
+                'type': 'circle',
+                'source': 'aerodromes',
+                'paint': {
+                    'circle-radius': 6,
+                    'circle-color': '#3b82f6',
+                    'circle-stroke-width': 1,
+                    'circle-stroke-color': '#ffffff'
+                }
+            });
+            
+            // Add ATS routes source
+            map.addSource('ats-routes', {
+                'type': 'geojson',
+                'data': atsRoutes
+            });
+            
+            // Add ATS routes layer
+            map.addLayer({
+                'id': 'ats-routes',
+                'type': 'line',
+                'source': 'ats-routes',
+                'layout': {
+                    'line-join': 'round',
+                    'line-cap': 'round'
+                },
+                'paint': {
+                    'line-color': '#10b981',
+                    'line-width': 2
+                }
+            });
+            
+            // Add NOTAMs source
+            map.addSource('notams', {
+                'type': 'geojson',
+                'data': notams
+            });
+            
+            // Add NOTAMs layer
+            map.addLayer({
+                'id': 'notams',
+                'type': 'circle',
+                'source': 'notams',
+                'paint': {
+                    'circle-radius': 6,
+                    'circle-color': '#f59e0b',
+                    'circle-stroke-width': 1,
+                    'circle-stroke-color': '#ffffff'
+                }
+            });
+            
+            // Create a popup but don't add it to the map yet
+            const popup = new mapboxgl.Popup({
+                closeButton: false,
+                closeOnClick: false
+            });
+            
+            // When a user moves their mouse over the aerodrome layer, show info
+            map.on('mouseenter', 'aerodromes', (e) => {
+                // Change the cursor style as a UI indicator
+                map.getCanvas().style.cursor = 'pointer';
+                
+                // Get the properties from the hovered feature
+                const properties = e.features[0].properties;
+                
+                // Create HTML content for the popup
+                const popupContent = `
+                    <h3 class="text-lg font-bold">${properties.name} (${properties.icao})</h3>
+                    <div class="mt-2">
+                        <p><span class="font-medium">Location:</span> ${properties.city}, ${properties.country}</p>
+                        <p><span class="font-medium">Elevation:</span> ${properties.elevation}</p>
+                        <p><span class="font-medium">Runways:</span> ${properties.runways}</p>
+                        <p><span class="font-medium">Longest Runway:</span> ${properties.longestRunway}</p>
+                    </div>
+                `;
+                
+                // Set popup content and location
+                popup.setLngLat(e.lngLat)
+                    .setHTML(popupContent)
+                    .addTo(map);
+            });
+            
+            // When the mouse leaves the aerodrome layer, remove the popup
+            map.on('mouseleave', 'aerodromes', () => {
+                map.getCanvas().style.cursor = '';
+                popup.remove();
+            });
+            
+            // Show NOTAM details when clicked
+            map.on('click', 'notams', (e) => {
+                const properties = e.features[0].properties;
+                
+                const popupContent = `
+                    <h3 class="text-lg font-bold">NOTAM ${properties.id}</h3>
+                    <div class="mt-2">
+                        <p><span class="font-medium">Type:</span> ${properties.type}</p>
+                        <p><span class="font-medium">Location:</span> ${properties.location}</p>
+                        <p><span class="font-medium">Valid:</span> ${new Date(properties.validFrom).toLocaleString()} to ${new Date(properties.validTo).toLocaleString()}</p>
+                        <p class="mt-2"><span class="font-medium">Message:</span> ${properties.message}</p>
+                    </div>
+                `;
+                
+                new mapboxgl.Popup()
+                    .setLngLat(e.lngLat)
+                    .setHTML(popupContent)
+                    .addTo(map);
+            });
+            
+            // Change cursor to pointer when hovering NOTAMs
+            map.on('mouseenter', 'notams', () => {
+                map.getCanvas().style.cursor = 'pointer';
+            });
+            
+            map.on('mouseleave', 'notams', () => {
+                map.getCanvas().style.cursor = '';
+            });
+        });
+        
+        // Toggle sidebar
+        document.getElementById('sidebar-toggle').addEventListener('click', function() {
+            document.querySelector('.sidebar').classList.toggle('collapsed');
+            this.querySelector('i').classList.toggle('fa-chevron-left');
+            this.querySelector('i').classList.toggle('fa-chevron-right');
+        });
+        
+        // Toggle layer groups
+        function toggleGroup(element) {
+            const icon = element.querySelector('i');
+            const content = element.nextElementSibling;
+            
+            icon.classList.toggle('fa-chevron-down');
+            icon.classList.toggle('fa-chevron-right');
+            
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+            } else {
+                content.style.display = 'none';
+            }
+        }
+        
+        // Initialize all layer groups to be expanded
+        document.querySelectorAll('.layer-group-title').forEach(title => {
+            title.nextElementSibling.style.display = 'block';
+        });
+    </script>
+</body>
+</html>
